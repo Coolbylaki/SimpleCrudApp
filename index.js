@@ -4,14 +4,17 @@ const port = 3000;
 const path = require("path");
 const { v4: uuid } = require("uuid") // Random ID NPM
 
-app.use(express.static(path.join(__dirname, "/public"))) // Path for running 
+// Paths for running server from any pwd 
+app.use(express.static(path.join(__dirname, "/public")))
+app.set("views", path.join(__dirname, "views"));
 
-app.set("views", path.join(__dirname, "views")); // Path for running 
 app.set("view engine", "ejs"); // Templating engine
 
+// Include both parsers
 app.use(express.urlencoded({ extended: true, }));
-app.use(express.json()); // Include both parsers
+app.use(express.json());
 
+// Fake database for manipulation
 const comments = [
     {
         id: uuid(),
@@ -33,22 +36,26 @@ const comments = [
         username: 'onlysayswoof',
         comment: 'woof woof woof'
     }
-]; // Fake database
+];
 
+// render comments page
 app.get("/comments", (req, res) => {
     res.render("comments/index", { comments })
 })
 
+// render new comment page
 app.get("/comments/new", (req, res) => {
     res.render("comments/new")
 })
 
-app.post("/comments", (req, res) => { // Add new comment and redirect
+// Add new comment and redirect
+app.post("/comments", (req, res) => {
     const { username, comment } = req.body
     comments.push({ username, comment, id: uuid() })
     res.redirect("/comments")
 })
 
+// Render comment in more details
 app.get("/comments/:id", (req, res) => {
     const { id } = req.params
     const comment = comments.find(c => c.id === id) // Object with that ID
@@ -57,7 +64,15 @@ app.get("/comments/:id", (req, res) => {
     } else {
         res.render("comments/error", { id }) // Error page for invalid ID
     }
+})
 
+// Edit comment
+app.patch("/comments/:id", (req, res) => {
+    const { id } = req.params
+    const foundComment = comments.find(c => c.id === id)
+    const newCommentText = req.body.comment
+    foundComment.comment = newCommentText
+    res.redirect("/comments")
 })
 
 app.listen(port, () => {
