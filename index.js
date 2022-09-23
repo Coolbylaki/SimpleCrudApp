@@ -3,16 +3,21 @@ const app = express();
 const port = 3000;
 const path = require("path");
 const { v4: uuid } = require("uuid") // Random ID NPM
+const methodOverride = require("method-override") // Trick the form post requests
 
 // Paths for running server from any pwd 
 app.use(express.static(path.join(__dirname, "/public")))
 app.set("views", path.join(__dirname, "views"));
 
-app.set("view engine", "ejs"); // Templating engine
+// Templating engine
+app.set("view engine", "ejs");
 
 // Include both parsers
 app.use(express.urlencoded({ extended: true, }));
 app.use(express.json());
+
+// Middleware for patch and delete
+app.use(methodOverride("_method"))
 
 // Fake database for manipulation
 const comments = [
@@ -73,6 +78,12 @@ app.patch("/comments/:id", (req, res) => {
     const newCommentText = req.body.comment
     foundComment.comment = newCommentText
     res.redirect("/comments")
+})
+
+app.get("/comments/:id/edit", (req, res) => {
+    const { id } = req.params
+    const comment = comments.find(c => c.id === id)
+    res.render("comments/edit", { comment })
 })
 
 app.listen(port, () => {

@@ -12,6 +12,7 @@
     <h1>Comment ID: <span style="font-weight: 500;"><%= comment.id %></span></h1>
     <h2><%= comment.comment%> <span style="font-weight: 300"> - by <%= comment.username %></span></h2>
     <button><a style="text-decoration: none;font-size:1.3em" href="/comments">Return</a></button>
+    <button><a style="text-decoration: none;font-size:1.3em" href="/comments/<%= comment.id %>/edit">Edit</a></button>
 </body>
 
 </html>
