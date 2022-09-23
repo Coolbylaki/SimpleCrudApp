@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(methodOverride("_method"))
 
 // Fake database for manipulation
-const comments = [
+let comments = [
     {
         id: uuid(),
         username: 'Todd',
@@ -56,8 +56,12 @@ app.get("/comments/new", (req, res) => {
 // Add new comment and redirect
 app.post("/comments", (req, res) => {
     const { username, comment } = req.body
-    comments.push({ username, comment, id: uuid() })
-    res.redirect("/comments")
+    if (comment) {
+        comments.push({ username, comment, id: uuid() })
+        res.redirect("/comments")
+    } else {
+        res.redirect("/comments")
+    }
 })
 
 // Render comment in more details
@@ -80,10 +84,18 @@ app.patch("/comments/:id", (req, res) => {
     res.redirect("/comments")
 })
 
+// Form for editing comments
 app.get("/comments/:id/edit", (req, res) => {
     const { id } = req.params
     const comment = comments.find(c => c.id === id)
     res.render("comments/edit", { comment })
+})
+
+// Delete comment
+app.delete("/comments/:id", (req, res) => {
+    const { id } = req.params
+    comments = comments.filter(c => c.id !== id)
+    res.redirect("/comments")
 })
 
 app.listen(port, () => {

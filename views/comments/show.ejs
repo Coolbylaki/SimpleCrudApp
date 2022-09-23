@@ -14,6 +14,9 @@
     <h2><%= comment.comment%> <span style="font-weight: 300"> - by <%= comment.username %></span></h2>
     <button><a style="text-decoration: none;font-size:1.3em" href="/comments">Return</a></button>
     <button><a style="text-decoration: none;font-size:1.3em" href="/comments/<%= comment.id %>/edit">Edit</a></button>
+    <form method="POST" action="/comments/<%= comment.id %>?_method=DELETE">
+        <button style="position: relative;bottom:27px;left:122px;font-size:1.10em">Delete</button>
+    </form>
 </body>
 
 </html>
