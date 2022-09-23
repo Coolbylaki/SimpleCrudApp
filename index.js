@@ -2,15 +2,15 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const path = require("path");
-const { v4: uuid } = require("uuid")
+const { v4: uuid } = require("uuid") // Random ID NPM
 
-app.use(express.static(path.join(__dirname, "/public")))
+app.use(express.static(path.join(__dirname, "/public"))) // Path for running 
 
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views")); // Path for running 
+app.set("view engine", "ejs"); // Templating engine
 
 app.use(express.urlencoded({ extended: true, }));
-app.use(express.json());
+app.use(express.json()); // Include both parsers
 
 const comments = [
     {
@@ -33,7 +33,7 @@ const comments = [
         username: 'onlysayswoof',
         comment: 'woof woof woof'
     }
-];
+]; // Fake database
 
 app.get("/comments", (req, res) => {
     res.render("comments/index", { comments })
@@ -43,7 +43,7 @@ app.get("/comments/new", (req, res) => {
     res.render("comments/new")
 })
 
-app.post("/comments", (req, res) => {
+app.post("/comments", (req, res) => { // Add new comment and redirect
     const { username, comment } = req.body
     comments.push({ username, comment, id: uuid() })
     res.redirect("/comments")
@@ -55,7 +55,7 @@ app.get("/comments/:id", (req, res) => {
     if (comment) {
         res.render("comments/show", { comment })
     } else {
-        res.render("comments/error", { id })
+        res.render("comments/error", { id }) // Error page for invalid ID
     }
 
 })
